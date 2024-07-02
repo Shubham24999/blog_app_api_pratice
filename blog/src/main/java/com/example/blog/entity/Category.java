@@ -43,7 +43,6 @@ public class Category {
     private LocalDateTime categoryCreateDateTime;
     
     @OneToMany(mappedBy = "category",cascade = CascadeType.ALL)
-    // @JsonManagedReference
     private List<Post> postList;
     
 }

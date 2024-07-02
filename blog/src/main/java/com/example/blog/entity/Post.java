@@ -48,11 +48,9 @@ public class Post {
     private Category category;
     
     @ManyToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "user_id")
-    
+    @JoinColumn(name = "user_id") 
     private User user;
 
-    
 }
 
 

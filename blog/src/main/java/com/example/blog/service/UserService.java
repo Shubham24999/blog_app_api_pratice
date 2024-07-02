@@ -1,6 +1,7 @@
 package com.example.blog.service;
 
 import java.time.LocalDateTime;
+import java.time.ZoneOffset;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -10,6 +11,7 @@ import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.example.blog.entity.Post;
 import com.example.blog.entity.User;
 import com.example.blog.helper.ResponseEntity;
 import com.example.blog.model.UserModel;
@@ -48,7 +50,7 @@ public class UserService {
                     userModelData.setName(userData.getName());
                     userModelData.setEmail(userData.getEmail());
                     userModelData.setAbout(userData.getAbout());
-                    userModelData.setUserCreateDateTime(userData.getUserCreateDateTime());
+                    userModelData.setUserCreateDateTime(userData.getUserCreateDateTime().toEpochSecond(ZoneOffset.UTC));
 
 
 
@@ -101,6 +103,16 @@ public class UserService {
             userDetails.setName(userData.getName());
             userDetails.setPassword(userData.getPassword());
             userDetails.setUserCreateDateTime(LocalDateTime.now());
+            
+            List<Post> postList=userData.getPostList();
+
+            for(Post post:postList){
+                Post userPost=new Post();
+
+                
+            }
+
+
             User savedUser = userRepository.save(userDetails);
 
             responseValue.setMessage("New User Created.");

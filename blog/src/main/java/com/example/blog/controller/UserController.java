@@ -40,7 +40,7 @@ public class UserController {
 
     @PostMapping("user/create")
     public ResponseEntity newUser(@RequestBody UserModel userData) {
-        System.out.println("data is"+ userData);
+        // System.out.println("data is"+ userData);
         return userService.createUser(userData);
     }
 

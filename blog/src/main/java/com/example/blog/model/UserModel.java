@@ -25,7 +25,7 @@ public class UserModel {
     
     private String about;
 
-    public LocalDateTime userCreateDateTime;
+    public Long userCreateDateTime;
 
     private List<Post> postList;
     
