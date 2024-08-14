@@ -28,9 +28,10 @@ import lombok.ToString;
 @ToString
 @Table(name = "post_data")
 public class Post {
-    
+
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
+    @Column(name = "post_id")
     private Integer postId;
 
     private String title;
@@ -38,23 +39,19 @@ public class Post {
     private String content;
 
     private String image;
-    
+
     @Column(name = "post_created_date_time")
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm")
     private LocalDateTime postCreateDateTime;
-    
+
     @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "category_id")
     private Category category;
-    
+
     @ManyToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "user_id") 
+    @JoinColumn(name = "user_id")
     private User user;
 
 }
-
-
-
-
 
 // @JsonBackReference
