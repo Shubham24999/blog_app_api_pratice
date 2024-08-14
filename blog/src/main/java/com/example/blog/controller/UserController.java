@@ -40,7 +40,6 @@ public class UserController {
 
     @PostMapping("user/create")
     public ResponseEntity newUser(@RequestBody UserModel userData) {
-        // System.out.println("data is"+ userData);
         return userService.createUser(userData);
     }
 
@@ -51,7 +50,7 @@ public class UserController {
         try {
             return userService.updateUserDetail(id, userData);
         } catch (Exception e) {
-            responseValue.setMessage("User with that Id is not present.");
+            responseValue.setMessage("User with Id: " + id + " is not present.");
             responseValue.setStatus("NOT OK");
             return responseValue;
         }

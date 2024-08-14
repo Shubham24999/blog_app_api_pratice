@@ -50,8 +50,4 @@ public class CategoryController {
         return categoryService.removeCategory(id);
     }
 
-    
-    
-    
-    
 }
