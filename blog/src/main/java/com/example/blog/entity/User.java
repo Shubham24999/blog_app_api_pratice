@@ -16,14 +16,12 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import lombok.ToString;
 
 @Entity
 @NoArgsConstructor
 @AllArgsConstructor
 @Getter
 @Setter
-@ToString
 @Table(name = "users")
 public class User {
 
@@ -31,7 +29,7 @@ public class User {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Integer id;
 
-    @Column(name = "user_name", nullable = false, length = 100)
+    @Column(name = "user_name", nullable = false)
     private String name;
 
     @Column(name = "email", nullable = false)
