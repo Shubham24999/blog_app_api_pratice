@@ -6,7 +6,6 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
 
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
@@ -41,6 +40,9 @@ public class Category {
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm")
     @Column(name = "category_created_date_time")
     private LocalDateTime categoryCreateDateTime;
+    
+    @Column(name = "category_created_epoch")
+    private Long categoryCreateEpoch;
     
     @OneToMany(mappedBy = "category",cascade = CascadeType.ALL)
     private List<Post> postList;

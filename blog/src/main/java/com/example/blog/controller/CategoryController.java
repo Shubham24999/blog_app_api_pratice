@@ -11,11 +11,13 @@ import com.example.blog.helper.ResponseEntity;
 import com.example.blog.model.CategoryModel;
 import com.example.blog.service.CategoryService;
 
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 
 
+@CrossOrigin(origins = "*") // or your frontend URL
 @RestController
 @ResponseBody
 @RequestMapping("/api")

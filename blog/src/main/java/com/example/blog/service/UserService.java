@@ -33,36 +33,28 @@ public class UserService {
 
         ResponseEntity responseValue = new ResponseEntity();
 
-        List<User> userList = (List<User>) userRepository.findAll();
-
+        List<UserModel> userDataList = new ArrayList<>();
+        
         try {
+            List<User> userList = (List<User>) userRepository.findAll();
             // check that all the users are present or not.
 
-            List<UserModel> userDataList = new ArrayList<>();
 
-            if (userDataList.isEmpty()) {
-
+            if (!userList.isEmpty()) {
                 for (User userData : userList) {
-
                     UserModel userModelData = new UserModel();
-
                     userModelData.setId(userData.getId());
                     userModelData.setName(userData.getName());
                     userModelData.setEmail(userData.getEmail());
                     userModelData.setAbout(userData.getAbout());
                     userModelData.setUserCreateDateTime(userData.getUserCreateDateTime().toEpochSecond(ZoneOffset.UTC));
-
-
-
                     userDataList.add(userModelData);
-
                 }
                 responseValue.setStatus("OK");
                 responseValue.setMessage("Users List");
                 responseValue.setData(userDataList);
-
             } else {
-                responseValue.setStatus("OK");
+                responseValue.setStatus("OK");  
                 responseValue.setMessage("Users List is empty.");
             }
 
@@ -104,13 +96,13 @@ public class UserService {
             userDetails.setPassword(userData.getPassword());
             userDetails.setUserCreateDateTime(LocalDateTime.now());
             
-            List<Post> postList=userData.getPostList();
+            // List<Post> postList=userData.getPostList();
 
-            for(Post post:postList){
-                Post userPost=new Post();
+            // for(Post post:postList){
+            //     Post userPost=new Post();
 
                 
-            }
+            // }
 
 
             User savedUser = userRepository.save(userDetails);

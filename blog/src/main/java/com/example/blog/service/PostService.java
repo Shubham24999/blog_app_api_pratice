@@ -4,12 +4,8 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-
+import java.util.Base64;
+    
 import com.example.blog.entity.Category;
 import com.example.blog.entity.Post;
 import com.example.blog.entity.User;
@@ -20,8 +16,14 @@ import com.example.blog.repository.CategoryRepository;
 import com.example.blog.repository.PostRepository;
 import com.example.blog.repository.UserRepository;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
 @Service
 public class PostService {
+
     Logger logger = LogManager.getLogger(PostService.class);
 
     @Autowired
@@ -36,174 +38,153 @@ public class PostService {
     public ResponseEntity getAllPost() {
         ResponseEntity response = new ResponseEntity();
         try {
-            
-            List<Post> postList=(List<Post>) postRepository.findAll();
-            List<PostModel> postDataList=new ArrayList<>();
+            List<Post> postList = (List<Post>) postRepository.findAll();
+            List<PostModel> postDataList = new ArrayList<>();
 
-            if (postList.size()>0) {
-                
-                for(Post postData:postList){
-
-                    PostModel postModel=new PostModel(null, null, null, null, null, null, null, null, null);
-                    postModel.setPostId(postData.getPostId());
-                    postModel.setTitle(postData.getTitle());
-                    postModel.setContent(postData.getContent());
-                    postModel.setImage(postData.getImage());
-                    postModel.setUserId(postData.getUser().getId());
-                    postModel.setCategoryId(postData.getCategory().getCategoryId());
-                    postModel.setPostUploadDateTime(postData.getPostCreateDateTime());
-                    postDataList.add(postModel);
-                }
-                response.setMessage("Posts List are.");
-            
-            }else{
-                response.setMessage("Posts are empty.");
+            for (Post postData : postList) {
+                postDataList.add(mapPostToModel(postData));
             }
 
             response.setStatus("OK");
+            response.setMessage(postList.isEmpty() ? "Posts are empty." : "Posts fetched successfully.");
             response.setData(postDataList);
         } catch (Exception e) {
+            logger.error("Error in getAllPost: ", e);
             response.setStatus("NOT OK");
-            response.setMessage("Something Went Wrong:{}" + e.getMessage());
-
+            response.setMessage("Something went wrong: " + e.getMessage());
         }
         return response;
     }
 
     public ResponseEntity getUsersPost(Integer userId) {
         ResponseEntity response = new ResponseEntity();
-
-        Optional<User> userOptional = userRepository.findById(userId);
-
-        if (userOptional.isPresent()) {
-            User user = userOptional.get();
-
-            try {
-                List<Post> userPosts = postRepository.findByUser(user);
-
+        try {
+            Optional<User> userOptional = userRepository.findById(userId);
+            if (userOptional.isPresent()) {
+                List<Post> userPosts = postRepository.findByUser(userOptional.get());
                 List<PostModel> userPostDataList = new ArrayList<>();
 
-                for (Post userPostData : userPosts) {
-                    PostModel userPost = new PostModel(userId, null, null, null, userId, null, null, userId, null);
-                    userPost.setPostId(userPostData.getPostId());
-                    userPost.setTitle(userPostData.getTitle());
-                    userPost.setUserId(userPostData.getUser().getId());
+                for (Post post : userPosts) {
+                    PostModel postModel = mapPostToModel(post);
+                    postModel.setUserId(userId);
 
-                    Optional<Category> cat = categoryRepository.findById(userPostData.getCategory().getCategoryId());
+                    Optional<Category> cat = categoryRepository.findById(post.getCategory().getCategoryId());
+                    cat.ifPresent(category -> {
+                        CategoryModel catModel = new CategoryModel(
+                            category.getCategoryId(),
+                            category.getCategoriesTitle(),
+                            category.getCategoriesDescription(),
+                            category.getCategoryCreateDateTime()
+                        );
+                        postModel.setCategory(catModel);
+                    });
 
-                    if (cat.isPresent()) {
-                        CategoryModel catModel = new CategoryModel();
-
-                        catModel.setCategoryId(cat.get().getCategoryId());
-                        catModel.setCategoriesTitle(cat.get().getCategoriesTitle());
-                        catModel.setCategoriesDescription(cat.get().getCategoriesDescription());
-                        catModel.setCategoryCreateDateTime(cat.get().getCategoryCreateDateTime());
-
-                        userPost.setCategory(catModel);
-                    }
-
-                    userPost.setContent(userPostData.getContent());
-                    userPost.setImage(userPostData.getImage());
-                    userPost.setTitle(userPostData.getTitle());
-                    userPost.setPostUploadDateTime(userPostData.getPostCreateDateTime());
-
-                    userPostDataList.add(userPost);
+                    userPostDataList.add(postModel);
                 }
 
-                // crate a arraylist
-                // set that all the data related to that user in that model using instantiate
-                // return that all data into setData
-
                 response.setStatus("OK");
-                response.setMessage("All Posts for User with ID " + userId + " are: ");
+                response.setMessage("Posts fetched for User ID: " + userId);
                 response.setData(userPostDataList);
-                logger.info("Posts for user with ID {}: {}", userId, userPosts);
-            } catch (Exception e) {
+            } else {
                 response.setStatus("NOT OK");
-                response.setMessage(e.getMessage());
+                response.setMessage("User with ID " + userId + " not found.");
             }
-        } else {
+        } catch (Exception e) {
+            logger.error("Error in getUsersPost: ", e);
             response.setStatus("NOT OK");
-            response.setMessage("User is not valid.");
+            response.setMessage("Error: " + e.getMessage());
         }
-
         return response;
-
     }
 
     public ResponseEntity getCategoriesPost(Integer categoryId) {
         ResponseEntity response = new ResponseEntity();
+        try {
+            Optional<Category> categoryOptional = categoryRepository.findById(categoryId);
 
-        Optional<Category> categoryOptional = categoryRepository.findById(categoryId);
-        Category category = categoryOptional.get();
-        List<Post> categoryPosts = postRepository.findByCategory(category);
-        if (categoryOptional.isPresent() && categoryPosts.size() > 0) {
-
-            try {
+            if (categoryOptional.isPresent()) {
+                List<Post> categoryPosts = postRepository.findByCategory(categoryOptional.get());
 
                 List<PostModel> categoryPostList = new ArrayList<>();
-
-                for (Post categoryPost : categoryPosts) {
-                    PostModel categoryData = new PostModel(categoryId, null, null, null, categoryId, null, null,
-                            categoryId, null);
-                    categoryData.setPostId(categoryPost.getPostId());
-                    categoryData.setTitle(categoryPost.getTitle());
-                    categoryData.setContent(categoryPost.getContent());
-                    categoryData.setImage(categoryPost.getImage());
-                    categoryData.setPostUploadDateTime(categoryPost.getPostCreateDateTime());
-
-                    categoryPostList.add(categoryData);
+                for (Post post : categoryPosts) {
+                    PostModel model = mapPostToModel(post);
+                    model.setCategoryId(categoryId);
+                    categoryPostList.add(model);
                 }
 
                 response.setStatus("OK");
-                response.setMessage("All Posts for User with ID " + categoryId + " are: ");
+                response.setMessage("Posts fetched for Category ID: " + categoryId);
                 response.setData(categoryPostList);
-            } catch (Exception e) {
+            } else {
                 response.setStatus("NOT OK");
-                response.setMessage(e.getMessage());
+                response.setMessage("Category with ID " + categoryId + " not found.");
             }
-        } else {
-            response.setStatus("OK");
-            response.setMessage("Category with Id : " + categoryId + " is Not Present");
+        } catch (Exception e) {
+            logger.error("Error in getCategoriesPost: ", e);
+            response.setStatus("NOT OK");
+            response.setMessage("Error: " + e.getMessage());
         }
-
         return response;
-
     }
 
     public ResponseEntity createNewPost(PostModel postData, Integer userId, Integer categoryId) {
         ResponseEntity response = new ResponseEntity();
-
-        Post repoData = new Post();
-
         try {
             Optional<User> userOptional = userRepository.findById(userId);
             Optional<Category> categoryOptional = categoryRepository.findById(categoryId);
-
+    
             if (userOptional.isPresent() && categoryOptional.isPresent()) {
-                repoData.setContent(postData.getContent());
+                Post repoData = new Post();
                 repoData.setTitle(postData.getTitle());
-                repoData.setImage(postData.getImage());
+                repoData.setContent(postData.getContent());
                 repoData.setPostCreateDateTime(LocalDateTime.now());
                 repoData.setUser(userOptional.get());
                 repoData.setCategory(categoryOptional.get());
-
+    
+                if (postData.getImageFile() != null && !postData.getImageFile().isEmpty()) {
+                    repoData.setImage(postData.getImageFile().getBytes());
+                }
+    
                 Post savedPost = postRepository.save(repoData);
+    
                 postData.setPostId(savedPost.getPostId());
                 postData.setPostUploadDateTime(savedPost.getPostCreateDateTime());
                 postData.setUserId(userId);
                 postData.setCategoryId(categoryId);
+                postData.setImageBase64(Base64.getEncoder().encodeToString(savedPost.getImage()));
+    
                 response.setStatus("OK");
-                response.setMessage("New Post Created with ID: " + savedPost.getPostId());
+                response.setMessage("Post created successfully with ID: " + savedPost.getPostId());
                 response.setData(postData);
             } else {
-                response.setStatus("Not OK");
+                response.setStatus("NOT OK");
+                response.setMessage("Invalid User ID or Category ID");
             }
         } catch (Exception e) {
+            logger.error("Error in createNewPost: ", e);
             response.setStatus("NOT OK");
-            response.setMessage(e.getMessage());
+            response.setMessage("Error: " + e.getMessage());
         }
         return response;
-
     }
+    
+    // Helper method to map Post entity to PostModel
+    private PostModel mapPostToModel(Post post) {
+        PostModel model = new PostModel();
+        model.setPostId(post.getPostId());
+        model.setTitle(post.getTitle());
+        model.setContent(post.getContent());
+    
+        if (post.getImage() != null) {
+            model.setImageBase64(Base64.getEncoder().encodeToString(post.getImage()));
+        }
+    
+        model.setUserId(post.getUser().getId());
+        model.setCategoryId(post.getCategory().getCategoryId());
+        model.setPostUploadDateTime(post.getPostCreateDateTime());
+        return model;
+    }
+    
+
+
 }
