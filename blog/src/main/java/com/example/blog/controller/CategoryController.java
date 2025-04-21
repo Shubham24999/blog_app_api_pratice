@@ -1,55 +1,43 @@
 package com.example.blog.controller;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.bind.annotation.RestController;
-
-import com.example.blog.helper.ResponseEntity;
 import com.example.blog.model.CategoryModel;
 import com.example.blog.service.CategoryService;
+import com.example.blog.helper.RequestResponse;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
 
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-
-
-@CrossOrigin(origins = "*") // or your frontend URL
+@CrossOrigin(origins = "*") // You can specify frontend domain here
 @RestController
-@ResponseBody
 @RequestMapping("/api")
 public class CategoryController {
-    
+
     @Autowired
-    CategoryService categoryService;
+    private CategoryService categoryService;
 
     @GetMapping("/categories")
-    public ResponseEntity getCategory(){
-        return categoryService.getAllCategory();
+    public ResponseEntity<RequestResponse> getAllCategories() {
+        return ResponseEntity.ok(categoryService.getAllCategory());
     }
 
     @GetMapping("/category/{id}")
-    public ResponseEntity getSingleCategory(@PathVariable Integer id){
-        return categoryService.getCategory(id);
+    public ResponseEntity<RequestResponse> getCategoryById(@PathVariable Integer id) {
+        return ResponseEntity.ok(categoryService.getCategory(id));
     }
 
     @PostMapping("/category/create")
-    public ResponseEntity createCategory(@RequestBody CategoryModel categoryData){
-        return categoryService.createNewCategory(categoryData);
+    public ResponseEntity<RequestResponse> createCategory(@RequestBody CategoryModel categoryData) {
+        return ResponseEntity.ok(categoryService.createNewCategory(categoryData));
     }
 
-    
-    @PostMapping("/category/update/{id}")
-    public ResponseEntity updateCategory(@PathVariable Integer id,@RequestBody CategoryModel categoryData){
-        return categoryService.updateCategoryData(id,categoryData);
+    @PutMapping("/category/update/{id}")
+    public ResponseEntity<RequestResponse> updateCategory(@PathVariable Integer id,
+            @RequestBody CategoryModel categoryData) {
+        return ResponseEntity.ok(categoryService.updateCategoryData(id, categoryData));
     }
 
     @DeleteMapping("/category/delete/{id}")
-    public ResponseEntity deleteCategory(@PathVariable Integer id){
-        return categoryService.removeCategory(id);
+    public ResponseEntity<RequestResponse> deleteCategory(@PathVariable Integer id) {
+        return ResponseEntity.ok(categoryService.removeCategory(id));
     }
-
 }

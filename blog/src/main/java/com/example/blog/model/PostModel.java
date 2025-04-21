@@ -1,7 +1,5 @@
 package com.example.blog.model;
 
-import java.time.LocalDateTime;
-
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -29,9 +27,8 @@ public class PostModel {
     private Integer userId;
     private UserModel user;
 
-    private LocalDateTime postUploadDateTime;
+    private Long postUploadDateTimeEpoch;
 
     // Only for receiving image while uploading
     private transient MultipartFile imageFile;
 }
-

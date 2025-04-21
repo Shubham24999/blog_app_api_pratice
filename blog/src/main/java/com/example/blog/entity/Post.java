@@ -43,9 +43,9 @@ public class Post {
     @Column(name = "image", columnDefinition = "BYTEA") // PostgreSQL specific
     private byte[] image;
 
-    @Column(name = "post_created_date_time")
-    @JsonFormat(pattern = "yyyy-MM-dd HH:mm")
-    private LocalDateTime postCreateDateTime;
+    @Column(name = "post_created_date_time_epoch")
+    // @JsonFormat(pattern = "yyyy-MM-dd HH:mm")
+    private Long postCreateDateTimeEpoch;
 
     @Column(name = "post_created_epoch")
     private Long postCreateEpoch;

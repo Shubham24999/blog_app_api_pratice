@@ -9,10 +9,11 @@ import lombok.Setter;
 @Getter
 @Setter
 @AllArgsConstructor
-public class ResponseEntity {
+public class RequestResponse {
 
     private String status;
     private String message;
     private Object data;
+   
     
 }

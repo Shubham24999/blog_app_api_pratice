@@ -1,6 +1,5 @@
 package com.example.blog.model;
 
-import java.time.LocalDateTime;
 import java.util.List;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -12,11 +11,14 @@ import lombok.ToString;
 @Setter
 @ToString
 public class UserModel {
+
     private Integer id;
     private String name;
     private String email;
-    private String password;
     private String about;
+    private String role;
+    private String password;
     private Long userCreateDateTime;
-    private List<PostModel> postList; // Changed to PostModel for clean JSON
+    private List<PostModel> postList;
+
 }

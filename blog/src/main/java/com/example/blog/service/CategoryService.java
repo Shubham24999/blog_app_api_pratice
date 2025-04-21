@@ -1,6 +1,7 @@
 package com.example.blog.service;
 
 import java.time.LocalDateTime;
+import java.time.ZoneOffset;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -9,7 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.example.blog.entity.Category;
-import com.example.blog.helper.ResponseEntity;
+import com.example.blog.helper.RequestResponse;
 import com.example.blog.model.CategoryModel;
 import com.example.blog.repository.CategoryRepository;
 
@@ -17,10 +18,10 @@ import com.example.blog.repository.CategoryRepository;
 public class CategoryService {
 
     @Autowired
-    CategoryRepository categoryRepository;
+    private CategoryRepository categoryRepository;
 
-    public ResponseEntity getAllCategory() {
-        ResponseEntity response = new ResponseEntity();
+    public RequestResponse getAllCategory() {
+        RequestResponse response = new RequestResponse();
         List<CategoryModel> listCategoryData = new ArrayList<>();
         try {
 
@@ -34,7 +35,7 @@ public class CategoryService {
                     categoryData.setCategoryId(categoryValue.getCategoryId());
                     categoryData.setCategoriesTitle(categoryValue.getCategoriesTitle());
                     categoryData.setCategoriesDescription(categoryValue.getCategoriesDescription());
-                    categoryData.setCategoryCreateDateTime(categoryValue.getCategoryCreateDateTime());
+                    categoryData.setCategoryCreateDateTimeEpoch(categoryValue.getCategoryCreateDateTimeEpoch());
 
 
                     listCategoryData.add(categoryData);
@@ -53,8 +54,8 @@ public class CategoryService {
         return response;
     }
 
-    public ResponseEntity getCategory(Integer id) {
-        ResponseEntity response = new ResponseEntity();
+    public RequestResponse getCategory(Integer id) {
+        RequestResponse response = new RequestResponse();
         try {
             Optional<Category> category = categoryRepository.findById(id);
 
@@ -68,21 +69,21 @@ public class CategoryService {
             }
         } catch (Exception e) {
             response.setMessage("Something Went Wrong:" + e);
-            response.setStatus("OK");
+            response.setStatus("NOT OK");
         }
 
         return response;
     }
 
-    public ResponseEntity createNewCategory(CategoryModel categoryData) {
-        ResponseEntity response = new ResponseEntity();
+    public RequestResponse createNewCategory(CategoryModel categoryData) {
+        RequestResponse response = new RequestResponse();
 
         try {
             Category category = new Category();
 
             category.setCategoriesTitle(categoryData.getCategoriesTitle());
             category.setCategoriesDescription(categoryData.getCategoriesDescription());
-            category.setCategoryCreateDateTime(LocalDateTime.now());
+            category.setCategoryCreateDateTimeEpoch(LocalDateTime.now().toEpochSecond(ZoneOffset.UTC));
 
             Category savedCategory = categoryRepository.save(category);
             response.setMessage("Category Data has been saved.");
@@ -97,8 +98,8 @@ public class CategoryService {
         return response;
     }
 
-    public ResponseEntity updateCategoryData(Integer id, CategoryModel categoryData) {
-        ResponseEntity response = new ResponseEntity();
+    public RequestResponse updateCategoryData(Integer id, CategoryModel categoryData) {
+        RequestResponse response = new RequestResponse();
 
         try {
 
@@ -128,8 +129,8 @@ public class CategoryService {
         return response;
     }
 
-    public ResponseEntity removeCategory(Integer id) {
-        ResponseEntity response = new ResponseEntity();
+    public RequestResponse removeCategory(Integer id) {
+        RequestResponse response = new RequestResponse();
         try {
             Optional<Category> category = categoryRepository.findById(id);
 
@@ -144,7 +145,7 @@ public class CategoryService {
             }
         } catch (Exception e) {
             response.setMessage("Something Went Wrong:" + e);
-            response.setStatus("OK");
+            response.setStatus("NOT OK");
         }
 
         return response;

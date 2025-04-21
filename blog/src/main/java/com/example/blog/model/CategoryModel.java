@@ -17,5 +17,5 @@ public class CategoryModel {
     private Integer categoryId;
     private String categoriesTitle;
     private String categoriesDescription;
-    private LocalDateTime categoryCreateDateTime;
+    private Long categoryCreateDateTimeEpoch;
 }

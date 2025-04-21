@@ -37,9 +37,9 @@ public class Category {
     @Column(name = "description_description")
     private String categoriesDescription;
 
-    @JsonFormat(pattern = "yyyy-MM-dd HH:mm")
-    @Column(name = "category_created_date_time")
-    private LocalDateTime categoryCreateDateTime;
+    // @JsonFormat(pattern = "yyyy-MM-dd HH:mm")
+    @Column(name = "category_created_date_time_epoch")
+    private Long categoryCreateDateTimeEpoch;
     
     @Column(name = "category_created_epoch")
     private Long categoryCreateEpoch;

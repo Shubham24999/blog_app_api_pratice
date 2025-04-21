@@ -1,65 +1,78 @@
-package com.example.blog.controller;
+// package com.example.blog.controller;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.bind.annotation.RestController;
+// import org.springframework.beans.factory.annotation.Autowired;
+// import org.springframework.http.ResponseEntity;
+// import org.springframework.web.bind.annotation.*;
 
-import com.example.blog.helper.ResponseEntity;
-import com.example.blog.model.UserModel;
-import com.example.blog.repository.UserRepository;
-import com.example.blog.service.UserService;
+// import com.example.blog.helper.RequestResponse;
+// import com.example.blog.model.UserModel;
+// import com.example.blog.service.UserService;
 
-@RestController
-@ResponseBody
-@RequestMapping("/api")
-@Validated
-public class UserController {
+// import org.springframework.security.access.prepost.PreAuthorize;
+// import org.springframework.security.core.Authentication;
 
-    @Autowired
-    UserService userService;
+// @RestController
+// @RequestMapping("/api/users")
+// public class UserController {
 
-    @Autowired
-    UserRepository userRepository;
+//     // @Autowired
+//     // private UserService userService;
 
-    @GetMapping("/users")
-    public ResponseEntity getUsers() {
-        return userService.getAllUser();
-    }
+//     // Get details of the logged-in user
+//     @GetMapping("/me")
+//     public ResponseEntity<RequestResponse> getLoggedInUser(Authentication authentication) {
+//         String email = authentication.getName();
+//         RequestResponse response = userService.getLoggedInUserProfile(email);
+//         return ResponseEntity.ok(response);
+//     }
 
-    @GetMapping("/user/{id}")
-    public ResponseEntity getUser(@PathVariable Integer id) {
-        return userService.getSingleUser(id);
-    }
+//     // Get all users - Only Admin
+//     @GetMapping
+//     // @PreAuthorize("hasRole('ADMIN')")
+//     public ResponseEntity<RequestResponse> getAllUsers() {
+//         RequestResponse response = userService.getAllUsers();
+//         return ResponseEntity.ok(response);
+//     }
 
-    @PostMapping("user/create")
-    public ResponseEntity newUser(@RequestBody UserModel userData) {
-        return userService.createUser(userData);
-    }
+//     // Get user by ID - Admin can view all, User can only view themselves
+//     @GetMapping("/{id}")
+//     public ResponseEntity<RequestResponse> getUserById(@PathVariable Integer id, Authentication authentication) {
+//         String email = authentication.getName();
+//         boolean isAdmin = authentication.getAuthorities().stream()
+//                 .anyMatch(role -> role.getAuthority().equals("ROLE_ADMIN"));
 
-    @PostMapping("/user/update/{id}")
-    public ResponseEntity updateUser(@PathVariable Integer id, @RequestBody UserModel userData) {
+//         RequestResponse userResponse = userService.getSingleUser(id);
 
-        ResponseEntity responseValue = new ResponseEntity();
-        try {
-            return userService.updateUserDetail(id, userData);
-        } catch (Exception e) {
-            responseValue.setMessage("User with Id: " + id + " is not present.");
-            responseValue.setStatus("NOT OK");
-            return responseValue;
-        }
+//         if (!isAdmin && userResponse.getData() != null
+//                 && !email.equals(((UserModel) userResponse.getData()).getEmail())) {
+//             RequestResponse deniedResponse = new RequestResponse("NOT OK", "Access Denied", null);
+//             return ResponseEntity.status(403).body(deniedResponse);
+//         }
 
-    }
+//         return ResponseEntity.ok(userResponse);
+//     }
 
-    @DeleteMapping("/user/delete/{id}")
-    public ResponseEntity deleteUser(@PathVariable Integer id) {
-        return userService.deleteUserData(id);
-    }
+//     // Update user
+//     @PutMapping("/{id}")
+//     public ResponseEntity<RequestResponse> updateUser(@PathVariable Integer id,
+//             @RequestBody UserModel userData,
+//             Authentication authentication) {
+//         String email = authentication.getName();
+//         boolean isAdmin = authentication.getAuthorities().stream()
+//                 .anyMatch(role -> role.getAuthority().equals("ROLE_ADMIN"));
 
-}
+//         RequestResponse response = userService.updateUserDetail(id, userData, email, isAdmin);
+//         return ResponseEntity.ok(response);
+//     }
+
+//     // Delete user
+//     @DeleteMapping("/{id}")
+//     public ResponseEntity<RequestResponse> deleteUser(@PathVariable Integer id, Authentication authentication) {
+//         String email = authentication.getName();
+//         boolean isAdmin = authentication.getAuthorities().stream()
+//                 .anyMatch(role -> role.getAuthority().equals("ROLE_ADMIN"));
+
+//         RequestResponse response = userService.deleteUser(id, email, isAdmin);
+//         return ResponseEntity.ok(response);
+//     }
+// }
