@@ -2,7 +2,7 @@ package com.example.blog.service;
 
 import com.example.blog.entity.Category;
 import com.example.blog.entity.Post;
-import com.example.blog.entity.User;
+import com.example.blog.entity.Users;
 import com.example.blog.helper.RequestResponse;
 import com.example.blog.model.CategoryModel;
 import com.example.blog.model.PostModel;
@@ -57,7 +57,7 @@ public class PostService {
     public RequestResponse getUsersPost(Integer userId) {
         RequestResponse response = new RequestResponse();
         try {
-            Optional<User> userOpt = userRepository.findById(userId);
+            Optional<Users> userOpt = userRepository.findById(userId);
             if (userOpt.isEmpty()) {
                 response.setStatus("NOT OK");
                 response.setMessage("User not found with ID: " + userId);
@@ -130,7 +130,7 @@ public class PostService {
     public RequestResponse createNewPost(PostModel postData, Integer userId, Integer categoryId) {
         RequestResponse response = new RequestResponse();
         try {
-            Optional<User> userOpt = userRepository.findById(userId);
+            Optional<Users> userOpt = userRepository.findById(userId);
             Optional<Category> categoryOpt = categoryRepository.findById(categoryId);
 
             if (userOpt.isEmpty() || categoryOpt.isEmpty()) {

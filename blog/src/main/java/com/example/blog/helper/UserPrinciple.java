@@ -1,0 +1,70 @@
+package com.example.blog.helper;
+
+import java.util.Collection;
+import java.util.Collections;
+
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
+
+import com.example.blog.entity.Users;
+
+
+// This class represents the single user details object that will be used by Spring Security to authenticate the user
+public class UserPrinciple implements UserDetails {
+    private String username;
+    private String password;
+    private String email;
+
+    // public void UserDetails(String username, String password) {
+    //     this.username = username;
+    //     this.password = password;
+    // }
+
+    private Users user;
+
+    public UserPrinciple(Users user) {
+        this.user = user;
+       
+    }
+    
+
+    @Override
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+        return Collections.singleton(new SimpleGrantedAuthority("ROLE_USER"));
+    }
+
+    @Override
+    public String getUsername() {
+        return user.getEmail();
+    }
+
+    @Override
+    public String getPassword() {
+        return user.getPassword();  
+    }
+
+    @Override
+    public boolean isEnabled() {
+        return true;
+    }
+
+    @Override
+    public boolean isAccountNonExpired() {
+        return true;
+    }
+
+    @Override
+    public boolean isCredentialsNonExpired() {
+        return true;
+    }
+
+    @Override
+    public boolean isAccountNonLocked() {
+        return true;
+
+    }
+    
+}
+
+    

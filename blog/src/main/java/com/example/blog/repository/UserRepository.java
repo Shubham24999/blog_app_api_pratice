@@ -5,12 +5,13 @@ import java.util.Optional;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
 
-import com.example.blog.entity.User;
+import com.example.blog.entity.Users;
 
 @Repository
-public interface UserRepository extends CrudRepository<User,Integer> {
+public interface UserRepository extends CrudRepository<Users,Integer> {
 
-    Optional<User> findByEmail(String email);
+    Optional<Users> findByEmail(String email);
     boolean existsByEmail(String email);
+    
     
 }

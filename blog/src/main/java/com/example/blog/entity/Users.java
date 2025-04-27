@@ -1,6 +1,8 @@
 package com.example.blog.entity;
 
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import jakarta.persistence.CascadeType;
@@ -25,7 +27,8 @@ import lombok.Setter;
 @NoArgsConstructor
 @AllArgsConstructor
 @Table(name = "m_user")
-public class User {
+public class Users {
+
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Integer id;
@@ -35,7 +38,7 @@ public class User {
 
     @Column(name = "email", nullable = false, unique = true)
     private String email;
-
+    // columnDefinition = "TEXT"
     @Column(name = "password", nullable = false)
     private String password;
 
@@ -46,17 +49,12 @@ public class User {
     @Column(name = "user_created_date_time_epoch")
     private Long userCreateDateTimeEpoch;
 
-    @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
-    @JoinTable(
-        name = "user_role_mapping", // the name of the join table
-        joinColumns = @JoinColumn(name = "user_id"), // column in join table referring to User
-        inverseJoinColumns = @JoinColumn(name = "role_id") // column in join table referring to UserRole
-    )
-    private Set<UserRole> userRole = new HashSet<>();
-
-    // @ManyToMany
-    // @JoinColumn(name = "role_id")
-    // private UserRole userRole;
+    // @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    // @JoinTable(name = "user_role_mapping", // the name of the join table
+    //         joinColumns = @JoinColumn(name = "user_id"), // column in join table referring to User
+    //         inverseJoinColumns = @JoinColumn(name = "role_id") // column in join table referring to UserRole
+    // )
+    // private List<UserRole> userRole = new ArrayList();
 
 
 }

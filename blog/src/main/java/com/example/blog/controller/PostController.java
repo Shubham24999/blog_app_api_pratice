@@ -4,18 +4,35 @@ import com.example.blog.helper.RequestResponse;
 import com.example.blog.model.PostModel;
 import com.example.blog.service.PostService;
 
+import jakarta.servlet.http.HttpServlet;
+import jakarta.servlet.http.HttpServletRequest;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.web.server.csrf.CsrfToken;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
+@CrossOrigin(origins = "*")
 @RestController
 @RequestMapping("/api/posts")
 public class PostController {
 
     @Autowired
     private PostService postService;
+
+    @GetMapping
+    public String unAuthenticated(HttpServletRequest request) {
+        return "UnAuthenticated Post Response." + request.getSession().getId();
+    }
+
+    @GetMapping("/csrf")
+    public CsrfToken getCsrfToken(HttpServletRequest request) {
+        return (CsrfToken) request.getAttribute("_csrf");
+    }
 
     @GetMapping("/all")
     public ResponseEntity<RequestResponse> getAllPosts() {

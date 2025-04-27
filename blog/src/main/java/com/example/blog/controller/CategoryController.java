@@ -15,6 +15,11 @@ public class CategoryController {
     @Autowired
     private CategoryService categoryService;
 
+    @GetMapping
+    public String getMethodName() {
+        return "UnAuthenticated Category Response.";
+    }
+
     @GetMapping("/categories")
     public ResponseEntity<RequestResponse> getAllCategories() {
         return ResponseEntity.ok(categoryService.getAllCategory());
