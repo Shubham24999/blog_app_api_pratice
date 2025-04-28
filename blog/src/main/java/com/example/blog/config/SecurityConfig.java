@@ -11,12 +11,8 @@ import org.springframework.security.config.annotation.authentication.configurati
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
-import org.springframework.security.core.userdetails.User;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.security.crypto.password.NoOpPasswordEncoder;
-import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
@@ -35,16 +31,13 @@ public class SecurityConfig {
 
         return http.csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests(auth -> auth
-                        // .requestMatchers("/api/*").permitAll()
-                        .requestMatchers("/register","/login","/get-users")
-                        .permitAll()
-                        // .requestMatchers("/api/posts/*").permitAll()
-                        // .requestMatchers("/api/posts/category/{categoryId}").permitAll()
-                        // .requestMatchers("/api/posts/create/user/{userId}/category/{categoryId}").permitAll()
+                        .requestMatchers("/auth/*").permitAll()
+                        // .requestMatchers("/register","/login","/get-users")
+                        // .permitAll()
                         .anyRequest().authenticated())
 
                 // .formLogin(Customizer.withDefaults())
-                .httpBasic(Customizer.withDefaults())
+                // .httpBasic(Customizer.withDefaults())
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class)
                 .build();
@@ -54,47 +47,20 @@ public class SecurityConfig {
     @Bean
     public AuthenticationProvider authenticationProvider() {
         DaoAuthenticationProvider authProvider = new DaoAuthenticationProvider();
-        // authProvider.setPasswordEncoder(NoOpPasswordEncoder.getInstance());  ==>  // for testing only
+        // authProvider.setPasswordEncoder(NoOpPasswordEncoder.getInstance()); ==> //
+        // for testing only
         authProvider.setPasswordEncoder(new BCryptPasswordEncoder(12));
         authProvider.setUserDetailsService(userDetailsService);
         return authProvider;
     }
-    
 
-    // This will be used for authentication in the controller class for according to my self to apply filter
+    // This will be used for authentication in the controller class for according to
+    // my self to apply filter
     @Bean
-    public AuthenticationManager authenticationManager(AuthenticationConfiguration config) throws Exception{
-       
+    public AuthenticationManager authenticationManager(AuthenticationConfiguration config) throws Exception {
+
         return config.getAuthenticationManager();
 
-        
     }
-
-    // We can use BCryotPasswordEncoder for password encryption here also, But I
-    // have used in service class
-
-    // for ptatice only
-    // @Bean
-    // public UserDetailsService userDetailsService() {
-
-    // UserDetails user1=User
-    // .withDefaultPasswordEncoder()
-    // .username("Shubham")
-    // .password("s@123")
-    // .roles("ADMIN")
-    // .build();
-
-    // UserDetails user2=User
-    // .withDefaultPasswordEncoder()
-    // .username("deepak")
-    // .password("d@123")
-    // .roles("ADMIN")
-    // .build();
-
-    // // return new InMemoryUserDetailsManager();
-
-    // return new InMemoryUserDetailsManager(user1,user2);
-
-    // };
 
 }

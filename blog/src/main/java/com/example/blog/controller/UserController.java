@@ -15,10 +15,8 @@ import com.example.blog.service.UserService;
 import org.springframework.util.StringUtils;
 
 @RestController
-// @RequestMapping("/api/users")
+@RequestMapping("/auth")
 public class UserController {
-
-    private static final Logger logger = LogManager.getLogger(UserController.class);
 
     @Autowired
     private UserService userService;
@@ -50,7 +48,7 @@ public class UserController {
         if (!StringUtils.hasText(logInData.getEmail()) || !StringUtils.hasText(logInData.getPassword())) {
             response.setStatus("NOT OK");
             response.setMessage("Email and Password are required for login");
-            return ResponseEntity.badRequest().body(response); // RETURN IMMEDIATELY
+            return ResponseEntity.badRequest().body(response);
         }
 
         response = userService.loginUser(logInData);

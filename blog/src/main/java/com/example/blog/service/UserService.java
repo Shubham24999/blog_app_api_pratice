@@ -2,6 +2,8 @@ package com.example.blog.service;
 
 import java.util.Optional;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -9,6 +11,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import com.example.blog.controller.UserController;
 import com.example.blog.entity.Users;
 import com.example.blog.helper.RequestResponse;
 import com.example.blog.model.LogInResponse;
@@ -18,6 +21,8 @@ import com.example.blog.repository.UserRepository;
 
 @Service
 public class UserService {
+
+    private static final Logger logger = LogManager.getLogger(UserService.class);
 
     @Autowired
     private UserRepository userRepository;
@@ -66,18 +71,20 @@ public class UserService {
     public LogInResponse loginUser(LoginRequest logInData) {
         LogInResponse response = new LogInResponse();
         Optional<Users> user = userRepository.findByEmail(logInData.getEmail());
+        logger.info("User fetch status: " + user.isEmpty());
         if (user.isEmpty()) {
             response.setStatus("OK");
             response.setMessage("User not found with this email");
             return response;
         } else {
 
-            // this should be-- authenticationManager where we have declare with name like in Security Config
+            // this should be-- authenticationManager where we have declare with name like
+            // in Security Config
             Authentication authentication = authenticationManager.authenticate(
                     new UsernamePasswordAuthenticationToken(logInData.getEmail(), logInData.getPassword()));
-           
+
             if (authentication.isAuthenticated()) {
-                
+
                 String token = jwtUtilsService.generateToken(logInData.getEmail());
                 response.setToken(token);
                 response.setStatus("OK");
