@@ -60,15 +60,6 @@ public class UserController {
         }
     }
 
-    // Get details of the logged-in user
-    // @GetMapping("/me")
-    // public ResponseEntity<RequestResponse> getLoggedInUser(Authentication
-    // authentication) {
-    // String email = authentication.getName();
-    // RequestResponse response = userService.getLoggedInUserProfile(email);
-    // return ResponseEntity.ok(response);
-    // }
-
     // Get all users - Only Admin
     @GetMapping("/get-users")
     // @PreAuthorize("hasRole('ADMIN')")
@@ -83,25 +74,7 @@ public class UserController {
 
     }
 
-    // Get user by ID - Admin can view all, User can only view themselves
-    // @GetMapping("/{id}")
-    // public ResponseEntity<RequestResponse> getUserById(@PathVariable Integer id,
-    // Authentication authentication) {
-    // String email = authentication.getName();
-    // boolean isAdmin = authentication.getAuthorities().stream()
-    // .anyMatch(role -> role.getAuthority().equals("ROLE_ADMIN"));
 
-    // RequestResponse userResponse = userService.getSingleUser(id);
-
-    // if (!isAdmin && userResponse.getData() != null
-    // && !email.equals(((UserModel) userResponse.getData()).getEmail())) {
-    // RequestResponse deniedResponse = new RequestResponse("NOT OK", "Access
-    // Denied", null);
-    // return ResponseEntity.status(403).body(deniedResponse);
-    // }
-
-    // return ResponseEntity.ok(userResponse);
-    // }
 
     // Update user
     // @PutMapping("/{id}")

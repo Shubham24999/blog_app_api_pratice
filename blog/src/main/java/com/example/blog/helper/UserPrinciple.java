@@ -12,14 +12,6 @@ import com.example.blog.entity.Users;
 
 // This class represents the single user details object that will be used by Spring Security to authenticate the user
 public class UserPrinciple implements UserDetails {
-    private String username;
-    private String password;
-    private String email;
-
-    // public void UserDetails(String username, String password) {
-    //     this.username = username;
-    //     this.password = password;
-    // }
 
     private Users user;
 
