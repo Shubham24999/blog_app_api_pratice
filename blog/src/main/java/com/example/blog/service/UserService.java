@@ -11,10 +11,9 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import com.example.blog.controller.UserController;
 import com.example.blog.entity.Users;
 import com.example.blog.helper.RequestResponse;
-import com.example.blog.model.LogInResponse;
+import com.example.blog.model.SignUpLogInResponse;
 import com.example.blog.model.LoginRequest;
 import com.example.blog.model.UserModel;
 import com.example.blog.repository.UserRepository;
@@ -35,9 +34,9 @@ public class UserService {
 
     private BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder(12);
 
-    public RequestResponse registerUser(UserModel userData) {
+    public SignUpLogInResponse registerUser(UserModel userData) {
 
-        RequestResponse response = new RequestResponse();
+        SignUpLogInResponse response = new SignUpLogInResponse();
         if (userRepository.existsByEmail(userData.getEmail())) {
             response.setStatus("OK");
             response.setMessage("User already exists with this email");
@@ -51,7 +50,8 @@ public class UserService {
             newUser.setAbout(userData.getAbout());
             newUser.setUserCreateDateTimeEpoch(java.time.Instant.now().getEpochSecond());
             // newUser.setUserRole(userData.getRole());
-
+            String token = jwtUtilsService.generateToken(userData.getEmail());
+            response.setToken(token);
             response.setData(userRepository.save(newUser));
             response.setStatus("OK");
             response.setMessage("User registered successfully");
@@ -68,8 +68,8 @@ public class UserService {
         return response;
     }
 
-    public LogInResponse loginUser(LoginRequest logInData) {
-        LogInResponse response = new LogInResponse();
+    public SignUpLogInResponse loginUser(LoginRequest logInData) {
+        SignUpLogInResponse response = new SignUpLogInResponse();
         Optional<Users> user = userRepository.findByEmail(logInData.getEmail());
         logger.info("User fetch status: " + user.isEmpty());
         if (user.isEmpty()) {

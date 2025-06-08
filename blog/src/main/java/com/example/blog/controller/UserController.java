@@ -7,7 +7,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import com.example.blog.helper.RequestResponse;
-import com.example.blog.model.LogInResponse;
+import com.example.blog.model.SignUpLogInResponse;
 import com.example.blog.model.LoginRequest;
 import com.example.blog.model.UserModel;
 import com.example.blog.service.UserService;
@@ -22,9 +22,9 @@ public class UserController {
     private UserService userService;
 
     @PostMapping("/register")
-    public ResponseEntity<RequestResponse> registerUser(@RequestBody UserModel userData) {
+    public ResponseEntity<SignUpLogInResponse> registerUser(@RequestBody UserModel userData) {
 
-        RequestResponse response = new RequestResponse();
+        SignUpLogInResponse response = new SignUpLogInResponse();
         if (!StringUtils.hasText(userData.getEmail()) || !StringUtils.hasText(userData.getPassword())) {
             response.setStatus("NOT OK");
             response.setMessage("Email and Password are required");
@@ -42,9 +42,9 @@ public class UserController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<LogInResponse> loginUser(@RequestBody LoginRequest logInData) {
+    public ResponseEntity<SignUpLogInResponse> loginUser(@RequestBody LoginRequest logInData) {
 
-        LogInResponse response = new LogInResponse();
+        SignUpLogInResponse response = new SignUpLogInResponse();
         if (!StringUtils.hasText(logInData.getEmail()) || !StringUtils.hasText(logInData.getPassword())) {
             response.setStatus("NOT OK");
             response.setMessage("Email and Password are required for login");
